@@ -1,7 +1,7 @@
 {
   "name": "privalytics-frontend",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -12,5 +12,21 @@
     "@sveltejs/vite-plugin-svelte": "^1.0.0-next.30",
     "svelte": "^3.44.0",
     "vite": "^2.9.9"
-  }
+  },
+  "dependencies": {
+    "privalytics-js": "git+https://github.com/vocalizando/privalytics-js#00dccab606806cc23fb9c55ec7c1b41b89cdaa61"
+  },
+  "description": "This template should help get you started developing with Svelte in Vite.",
+  "main": "vite.config.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vocalizando/privalytics-frontend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vocalizando/privalytics-frontend/issues"
+  },
+  "homepage": "https://github.com/vocalizando/privalytics-frontend#readme"
 }

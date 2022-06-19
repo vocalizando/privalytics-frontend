@@ -1,23 +1,52 @@
 <script>
-  import logo from './assets/svelte.png'
-  import Counter from './lib/Counter.svelte'
+  import Entry from "./lib/Entry.svelte";
+  // FIXME: Add dep to package.json
+  import {retrieveAllEntries} from "./lib/privalytics-js.js"
+
+  const hostname = localStorage.getItem("hostname") || prompt("Hostname")
+  const username = localStorage.getItem("username") || prompt("Username")
+  const token = localStorage.getItem("token") || prompt("Token")
+
+  if (hostname == null || username == null || token == null) {
+    alert("Invalid credentials")
+  }
+
+  let promise = retrieveAllEntries(hostname, {
+    username,
+    token,
+  })
+
+  promise.then(() => {
+    localStorage.setItem("hostname", hostname)
+    localStorage.setItem("username", username)
+    localStorage.setItem("token", token)
+  })
+
+  function resetCredentials() {
+    localStorage.removeItem("hostname")
+    localStorage.removeItem("username")
+    localStorage.removeItem("token")
+
+    alert("The credentials are now removed from local storage")
+  }
 </script>
 
 <main>
-  <img src={logo} alt="Svelte Logo" />
-  <h1>Hello world!</h1>
+  <h1>Privalytics frontend</h1>
 
-  <Counter />
+  <button on:click|once|preventDefault|trusted={() => resetCredentials()}>Reset credentials</button>
 
-  <p>
-    Visit <a href="https://svelte.dev">svelte.dev</a> to learn how to build Svelte
-    apps.
-  </p>
-
-  <p>
-    Check out <a href="https://github.com/sveltejs/kit#readme">SvelteKit</a> for
-    the officially supported framework, also powered by Vite!
-  </p>
+  {#await promise}
+    <p>Loading entries...</p>
+  {:then entries}
+    <ul>
+      {#each entries as entry (entry.metadata.duid)}
+        <Entry entry={entry} user_data={{ username, token }} hostname={hostname}/>
+      {/each}
+    </ul>
+  {:catch error}
+    <p>Failed (check console for details)</p>
+  {/await}
 </main>
 
 <style>
@@ -27,39 +56,23 @@
   }
 
   main {
-    text-align: center;
     padding: 1em;
     margin: 0 auto;
   }
 
-  img {
-    height: 16rem;
-    width: 16rem;
+  button {
+    background-color: #dc3545;
+    border: none;
+    color: white;
+    padding: 10px 12px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    border-radius: 10px;
+    font-size: 15px;
   }
 
-  h1 {
-    color: #ff3e00;
-    text-transform: uppercase;
-    font-size: 4rem;
-    font-weight: 100;
-    line-height: 1.1;
-    margin: 2rem auto;
-    max-width: 14rem;
-  }
-
-  p {
-    max-width: 14rem;
-    margin: 1rem auto;
-    line-height: 1.35;
-  }
-
-  @media (min-width: 480px) {
-    h1 {
-      max-width: none;
-    }
-
-    p {
-      max-width: none;
-    }
+  button:hover {
+    cursor: pointer;
   }
 </style>
